@@ -1,0 +1,93 @@
+import { serviceGetApi } from "./api";
+import Notiflix from 'notiflix';
+
+const elements = {
+  form: document.querySelector('#search-form'),
+  input: document.querySelector('.input-form'),
+  gallery: document.querySelector('.gallery'),
+  loadMore: document.querySelector('.load-more')
+}
+elements.form.addEventListener('submit', onSubSearcImg)
+elements.loadMore.addEventListener('click', onClickNexpPage)
+let countPage = 1
+let qParam = ''
+let valueInput = ''
+let countTotalHits = 40
+elements.loadMore.classList.add('is-hidden')
+
+
+const parameters ={
+  key:'39127754-be1e37310bae930d939d50f92',
+  imageType : "photo",
+  orientation : "horizontal",
+  safesearch : true,
+  per_page: 40,
+  page: 1
+}
+
+function onSubSearcImg(event){
+  event.preventDefault()
+  elements.loadMore.classList.add('is-hidden')
+  valueInput = event.target.elements[0]
+
+  if (valueInput.value !== qParam) {
+    qParam = valueInput.value
+  }else{
+   return elements.gallery.textContent = ''
+  }
+  
+  serviceGetApi(parameters,qParam,countPage)
+  .then(data =>  {
+    console.log(data);
+    if (data.hits.length === 0) {
+    //  return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+    }
+    createMarkup(data.hits)})
+  .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+  )
+
+}
+``
+
+async function createMarkup(arr) {
+  const markup = arr.map(elem =>
+`<div class="photo-card">
+    <img class="img-card" src="${elem.webformatURL}" alt="${elem.tags}" loading="lazy" />
+    <div class="info">
+      <p class="info-item">
+        <b>Likes ${elem.likes}</b>
+      </p>
+      <p class="info-item">
+        <b>Views ${elem.views}</b>
+      </p>
+      <p class="info-item">
+        <b>Comments ${elem.comments}</b>
+      </p>
+      <p class="info-item">
+        <b>Downloads ${elem.downloads}</b>
+      </p>
+    </div>
+  </div>`).join()
+  elements.loadMore.classList.remove('is-hidden')
+
+  return elements.gallery.insertAdjacentHTML('beforeend', markup)
+}
+
+function onClickNexpPage(){
+  countPage +=1
+
+  serviceGetApi(parameters,qParam,countPage)
+  .then(data =>  {
+    countTotalHits += data.hits.length
+
+    if (countTotalHits >= data.totalHits) {
+
+      elements.loadMore.classList.add('is-hidden')
+      return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+      }
+    createMarkup(data.hits)
+  })
+    .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+    )
+  elements.loadMore.classList.remove('is-hidden')
+}
