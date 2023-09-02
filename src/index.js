@@ -1,5 +1,7 @@
-import { serviceGetApi } from "./api";
 import Notiflix from 'notiflix';
+import SimpleLightbox from "simplelightbox"
+import "simplelightbox/dist/simple-lightbox.min.css";
+import { serviceGetApi } from "./api";
 
 const elements = {
   form: document.querySelector('#search-form'),
@@ -13,6 +15,12 @@ let countPage = 1
 let qParam = ''
 let valueInput = ''
 let countTotalHits = 40
+
+const lightbox = new SimpleLightbox('.gallery a', { 
+ captionDelay: 250
+});
+
+
 elements.loadMore.classList.add('is-hidden')
 
 
@@ -35,15 +43,13 @@ function onSubSearcImg(event){
   }else{
    return elements.gallery.textContent = ''
   }
-  
-  serviceGetApi(parameters,qParam,countPage)
-  .then(data =>  {
+  serviceGetApi(parameters,qParam,countPage).then(data =>  {
     console.log(data);
     if (data.hits.length === 0) {
-    //  return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+     return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
     createMarkup(data.hits)})
-  .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+  .catch(reject =>  Notiflix.Notify.failure('111111Sorry, there are no images matching your search query. Please try again.')
   )
 
 }
@@ -51,8 +57,10 @@ function onSubSearcImg(event){
 
 async function createMarkup(arr) {
   const markup = arr.map(elem =>
-`<div class="photo-card">
-    <img class="img-card" src="${elem.webformatURL}" alt="${elem.tags}" loading="lazy" />
+   ` <div class="photo-card gallery__item">
+    <a class="gallery__link" href="${elem.webformatURL}">
+        <img class="img-card gallery__image" src="${elem.webformatURL}" alt="${elem.tags}" loading="lazy" />
+    </a>
     <div class="info">
       <p class="info-item">
         <b>Likes ${elem.likes}</b>
@@ -67,10 +75,12 @@ async function createMarkup(arr) {
         <b>Downloads ${elem.downloads}</b>
       </p>
     </div>
-  </div>`).join()
+    
+    </div>
+  `).join()
   elements.loadMore.classList.remove('is-hidden')
-
-  return elements.gallery.insertAdjacentHTML('beforeend', markup)
+  elements.gallery.insertAdjacentHTML('beforeend', markup)
+  lightbox.refresh();
 }
 
 function onClickNexpPage(){
@@ -91,3 +101,5 @@ function onClickNexpPage(){
     )
   elements.loadMore.classList.remove('is-hidden')
 }
+
+

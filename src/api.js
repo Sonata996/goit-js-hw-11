@@ -34,12 +34,9 @@ import axios from 'axios';
 
 export async function serviceGetApi(parameters,q,page) {
   const{key,imageType,orientation,safesearch,per_page} = parameters
-    // const URL = `https://pixabay.com/api?key=${parameters.key}
-    // &imageType=${parameters.imageType}&orientation=${parameters.orientation}&safesearch=${parameters.safesearch}
-    // &q=${parameters.q}&per_page=${parameters.per_page}&page=${parameters.page}`;
     const URL = `https://pixabay.com/api?key=${key}&imageType=${imageType}&orientation=${orientation}&safesearch=${safesearch}
     &q=${q}&per_page=${per_page}&page=${page}`;
       const response = await axios.get(URL)
-      
+
       return response.data;
 }

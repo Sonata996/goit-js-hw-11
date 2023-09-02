@@ -24,20 +24,19 @@ justify-content: center
     display: flex;
     flex-direction: column;
     width: 400px;
-    height: 300px;
+    height: 315px;
 }
 .img-card {
     max-width: 400px;
     max-height: 270px;
 }
 .info{
-    justify-content: space-between;
+    justify-content: space-around;
     display: flex;
     gap: 4px;
 }
 .info-item{
     margin: 0;
-    display: flex;
     max-width: 70px;
 }
 .load-more-container{
