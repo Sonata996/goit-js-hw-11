@@ -14,7 +14,8 @@ elements.loadMore.addEventListener('click', onClickNexpPage)
 let countPage = 1
 let qParam = ''
 let valueInput = ''
-let countTotalHits = 20
+let countTotalHits = 0
+let foo = 0
 
 const lightbox = new SimpleLightbox('.gallery a', { 
  captionDelay: 250
@@ -39,19 +40,42 @@ function onSubSearcImg(event){
   valueInput = event.target.elements[0]
 
   if (valueInput.value !== qParam) {
+
+    countPage = 1
     qParam = valueInput.value
-  }else{
-   return elements.gallery.textContent = ''
-  }
-  serviceGetApi(parameters,qParam,countPage).then(data =>  {
-    console.log(data);
-    if (data.hits.length === 0) {
+    elements.gallery.textContent = ''
+    
+    serviceGetApi(parameters,qParam,countPage)
+    .then(data =>  {
+      
+    countTotalHits = 0
+    foo = data.hits.length
+    countTotalHits += foo
+    console.log(countTotalHits)
+
+    
+    if (foo === 0) {
       elements.gallery.textContent = ''
      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
+
+    if (countTotalHits >= data.totalHits) {
+      createMarkup(data.hits)
+      elements.loadMore.classList.add('is-hidden')
+      return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+      }
+
     createMarkup(data.hits)})
-  .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+  .catch(reject =>  {
+    elements.gallery.textContent = ''
+    Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')}
   )
+  } else{
+      elements.loadMore.classList.remove('is-hidden')
+       Notiflix.Notify.info("Button to search for more, located at the bottom")
+  }
+  
+
 
 }
 ``
@@ -90,13 +114,17 @@ function onClickNexpPage(){
  
   serviceGetApi(parameters,qParam,countPage)
   .then(data =>  {
-    countTotalHits += data.hits.length
     createMarkup(data.hits)
 
-    if (countTotalHits === data.totalHits) {
+    foo = data.hits.length
+    countTotalHits += foo
+    console.log(countTotalHits)
+
+    if (countTotalHits >= data.totalHits) {
       elements.loadMore.classList.add('is-hidden')
       return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
       }
+
 
   })
     .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
