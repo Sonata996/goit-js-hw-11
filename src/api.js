@@ -6,8 +6,8 @@ export async function serviceGetApi(parameters,q,page) {
   const{key,imageType,orientation,safesearch,per_page} = parameters
     const URL = `?key=${key}&imageType=${imageType}&orientation=${orientation}&safesearch=${safesearch}
     &q=${q}&per_page=${per_page}&page=${page}`;
-      const response = await axios.get(URL)
 
+      const response = await axios.get(URL)  
       return response.data;
 }
 

@@ -14,7 +14,7 @@ elements.loadMore.addEventListener('click', onClickNexpPage)
 let countPage = 1
 let qParam = ''
 let valueInput = ''
-let countTotalHits = 40
+let countTotalHits = 20
 
 const lightbox = new SimpleLightbox('.gallery a', { 
  captionDelay: 250
@@ -46,6 +46,7 @@ function onSubSearcImg(event){
   serviceGetApi(parameters,qParam,countPage).then(data =>  {
     console.log(data);
     if (data.hits.length === 0) {
+      elements.gallery.textContent = ''
      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
     createMarkup(data.hits)})
@@ -86,20 +87,20 @@ async function createMarkup(arr) {
 function onClickNexpPage(){
   countPage +=1
 
+ 
   serviceGetApi(parameters,qParam,countPage)
   .then(data =>  {
     countTotalHits += data.hits.length
+    createMarkup(data.hits)
 
-    if (countTotalHits >= data.totalHits) {
-
+    if (countTotalHits === data.totalHits) {
       elements.loadMore.classList.add('is-hidden')
       return Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
       }
-    createMarkup(data.hits)
+
   })
     .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     )
   elements.loadMore.classList.remove('is-hidden')
 }
-
 
