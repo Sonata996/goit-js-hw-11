@@ -1,6 +1,15 @@
 import axios from 'axios';
 // import Notiflix from 'notiflix';
+axios.defaults.baseURL = 'https://pixabay.com/api/'
 
+export async function serviceGetApi(parameters,q,page) {
+  const{key,imageType,orientation,safesearch,per_page} = parameters
+    const URL = `?key=${key}&imageType=${imageType}&orientation=${orientation}&safesearch=${safesearch}
+    &q=${q}&per_page=${per_page}&page=${page}`;
+      const response = await axios.get(URL)
+
+      return response.data;
+}
 
 // export class ServiceGetApi {
 //   // page = 1
@@ -31,12 +40,3 @@ import axios from 'axios';
 // }
 // fetchGetAPI().then(res => console.log(res))
 
-
-export async function serviceGetApi(parameters,q,page) {
-  const{key,imageType,orientation,safesearch,per_page} = parameters
-    const URL = `https://pixabay.com/api?key=${key}&imageType=${imageType}&orientation=${orientation}&safesearch=${safesearch}
-    &q=${q}&per_page=${per_page}&page=${page}`;
-      const response = await axios.get(URL)
-
-      return response.data;
-}

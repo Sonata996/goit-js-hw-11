@@ -49,7 +49,7 @@ function onSubSearcImg(event){
      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
     createMarkup(data.hits)})
-  .catch(reject =>  Notiflix.Notify.failure('111111Sorry, there are no images matching your search query. Please try again.')
+  .catch(reject =>  Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
   )
 
 }
